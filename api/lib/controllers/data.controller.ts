@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction, Router } from "express";
 import Controller from '../interfaces/controller.interface';
 import DataService from "../modules/services/data.service";
-
-//let testArr = [4, 5, 6, 3, 5, 3, 7, 5, 13, 5, 6, 4, 3, 6, 3, 6];
+import Joi from "joi";
 
 class PostController implements Controller {
   public path = "/api/post";
@@ -23,9 +22,19 @@ class PostController implements Controller {
   }
 
   private addPost = async (req: Request, res: Response, next: NextFunction) => {
+    const postSchema = Joi.object({
+      title: Joi.string().required(),
+      text: Joi.string().required(),
+      image: Joi.string().uri().required(),
+    });
     try {
-      const { title, text, image } = req.body;
-      const newPost = await this.dataService.createPost({ title, text, image });
+      const { value, error } = postSchema.validate(req.body);
+      if (error) {
+        return res
+          .status(400)
+          .json({ message: "Validation failed", details: error.details });
+      }
+      const newPost = await this.dataService.createPost(value);
       res.status(201).json(newPost);
     } catch (error) {
       next(error);
