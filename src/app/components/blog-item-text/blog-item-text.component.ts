@@ -1,14 +1,15 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SummaryPipe } from '../../pipes/summary.pipe';
+import { SummaryPipe } from "../../pipes/summary.pipe";
+import { RouterModule } from "@angular/router";
 
 @Component({
   selector: 'blog-item-text',
   standalone: true,
-  imports: [CommonModule, SummaryPipe],
+  imports: [SummaryPipe, RouterModule],
   templateUrl: './blog-item-text.component.html',
-  styleUrls: ['./blog-item-text.component.css']
+  styleUrl: './blog-item-text.component.css'
 })
 export class BlogItemTextComponent {
   @Input() text?: string;
+  @Input() id?: number;
 }
